@@ -125,7 +125,7 @@ export default function MapViewer({ minimapUrl, events, showBots, currentTime }:
     const playerGroups = groupByPlayer(visibleEvents);
     let playerIdx = 0;
 
-    playerGroups.forEach((playerEvents, userId) => {
+    playerGroups.forEach((playerEvents, _userId) => {
       const isBot = playerEvents[0]?.is_bot;
       const movements = playerEvents
         .filter(e => isMovementEvent(e.event))
