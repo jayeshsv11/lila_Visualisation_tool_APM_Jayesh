@@ -1,0 +1,25 @@
+node_modules/
+dist/
+.env
+__pycache__/
+.venv/
+*.pyc
+
+# Raw parquet data (too large for git)
+player_data/February_10/
+player_data/February_11/
+player_data/February_12/
+player_data/February_13/
+player_data/February_14/
+
+# Original minimap images (compressed versions in public/minimaps/)
+player_data/minimaps/
+
+# Verification artifacts
+scripts/coord_verification.png
+
+# IDE
+.vscode/
+.idea/
+.claude/
+.DS_Store

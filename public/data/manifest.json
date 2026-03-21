@@ -1,0 +1,49 @@
+{
+  "days": [
+    {
+      "label": "feb10",
+      "file": "feb10.json"
+    },
+    {
+      "label": "feb11",
+      "file": "feb11.json"
+    },
+    {
+      "label": "feb12",
+      "file": "feb12.json"
+    },
+    {
+      "label": "feb13",
+      "file": "feb13.json"
+    },
+    {
+      "label": "feb14",
+      "file": "feb14.json"
+    }
+  ],
+  "maps": [
+    "AmbroseValley",
+    "GrandRift",
+    "Lockdown"
+  ],
+  "map_configs": {
+    "AmbroseValley": {
+      "scale": 900,
+      "origin_x": -370,
+      "origin_z": -473
+    },
+    "GrandRift": {
+      "scale": 581,
+      "origin_x": -290,
+      "origin_z": -290
+    },
+    "Lockdown": {
+      "scale": 1000,
+      "origin_x": -500,
+      "origin_z": -500
+    }
+  },
+  "total_events": 89104,
+  "total_players": 339,
+  "total_matches": 796
+}
