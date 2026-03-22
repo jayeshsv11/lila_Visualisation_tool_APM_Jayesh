@@ -33,7 +33,7 @@ export default function EventLegend() {
             <span className="text-gray-300">Human path</span>
           </div>
           <div className="flex items-center gap-2 text-xs">
-            <span className="w-4 h-0.5 bg-gray-500 inline-block opacity-50"></span>
+            <span className="w-4 h-0.5 bg-amber-400 inline-block opacity-70"></span>
             <span className="text-gray-300">Bot path</span>
           </div>
         </div>

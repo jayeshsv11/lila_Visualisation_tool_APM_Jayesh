@@ -58,11 +58,19 @@ function App() {
     if (viewMode !== 'paths') return;
     const available = matches
       .filter(m => m.map_id === selectedMap && selectedDays.includes(m.day))
-      .sort((a, b) => (b.human_count + b.bot_count) - (a.human_count + a.bot_count));
+      .sort((a, b) => {
+        // Prefer matches with bots when showBots is enabled
+        if (showBots) {
+          const aHasBots = a.bot_count > 0 ? 1 : 0;
+          const bHasBots = b.bot_count > 0 ? 1 : 0;
+          if (bHasBots !== aHasBots) return bHasBots - aHasBots;
+        }
+        return (b.human_count + b.bot_count) - (a.human_count + a.bot_count);
+      });
     if (available.length > 0 && (!selectedMatch || !available.find(m => m.match_id === selectedMatch))) {
       setSelectedMatch(available[0].match_id);
     }
-  }, [matches, selectedMap, selectedDays, viewMode, selectedMatch]);
+  }, [matches, selectedMap, selectedDays, viewMode, selectedMatch, showBots]);
 
   const matchDuration = useMemo(() => {
     if (matchEvents.length === 0) return 60;

@@ -141,10 +141,10 @@ export default function MapViewer({ minimapUrl, events, showBots, currentTime }:
       if (movements.length > 1) {
         ctx.beginPath();
         ctx.strokeStyle = isBot
-          ? 'rgba(107, 114, 128, 0.3)'
+          ? '#fbbf24'
           : PLAYER_COLORS[playerIdx % PLAYER_COLORS.length];
-        ctx.lineWidth = isBot ? 1 : 1.5;
-        ctx.globalAlpha = isBot ? 0.3 : 0.7;
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = isBot ? 0.55 : 0.85;
 
         ctx.moveTo(movements[0].pixel_x * scale, movements[0].pixel_y * scale);
         for (let i = 1; i < movements.length; i++) {

@@ -14,7 +14,7 @@ export const EVENT_COLORS: Record<EventType, string> = {
   KilledByStorm: '#a855f7',
   Loot: '#22c55e',
   Position: '#3b82f6',
-  BotPosition: '#6b7280',
+  BotPosition: '#fbbf24',
 };
 
 export const EVENT_LABELS: Record<EventType, string> = {
