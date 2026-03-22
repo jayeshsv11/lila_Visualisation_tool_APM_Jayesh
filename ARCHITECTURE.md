@@ -77,7 +77,7 @@ pixel_y = (1 - v) * 1024    // Y-axis flipped (image origin is top-left)
 ## Assumptions
 
 - **Bot detection**: User IDs matching `/^\d+$/` are bots; UUIDs are humans. This aligns with the README but was not explicitly guaranteed for all edge cases.
-- **Timestamps**: The `ts` field represents batch-recorded server timestamps, not real-time match progression. Events within a match span sub-second ranges (~0.3-0.8s). The timeline still provides meaningful event ordering.
+- **Timestamps**: The raw `ts` field contains batch-recorded server timestamps (sub-second ranges per match), not real-time progression. To make the timeline/playback feature useful, the preprocessing assigns synthetic timestamps that distribute events evenly over an estimated match duration (60-300 seconds based on event count). This preserves event ordering while creating a meaningful playback timeline.
 - **February 14 partial day**: Included as-is; the tool shows reduced data for this day without special handling.
 
 ## Trade-offs
@@ -89,6 +89,8 @@ pixel_y = (1 - v) * 1024    // Y-axis flipped (image origin is top-left)
 | Canvas over SVG/WebGL | No built-in interactivity (hover/click) | Performance at scale; full rendering control; simpler code |
 | Single-match default view | Users must select matches manually | Prevents overwhelming canvas with 89K points |
 | WebP minimap compression | Older browsers may not support WebP | 60KB vs 10MB per image; WebP support is >97% globally |
+| Synthetic timeline | Playback timing doesn't reflect real match duration | Raw timestamps are batch-recorded; synthetic spacing makes playback useful |
+| Heatmap loads all days | Higher initial load for heatmap mode | Aggregating across all data produces more meaningful density patterns |
 
 ## What I'd Do Differently With More Time
 
@@ -96,5 +98,4 @@ pixel_y = (1 - v) * 1024    // Y-axis flipped (image origin is top-left)
 - Implement click-to-select a player and highlight their journey
 - Add a "compare matches" view (side-by-side maps)
 - Build a server-side data pipeline for larger datasets (DuckDB or Polars)
-- Add zoom/pan controls on the canvas for detailed inspection
 - Implement URL-based state (shareable links to specific match views)

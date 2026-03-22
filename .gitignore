@@ -23,3 +23,4 @@ scripts/coord_verification.png
 .idea/
 .claude/
 .DS_Store
+.vercel

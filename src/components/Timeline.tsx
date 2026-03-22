@@ -66,7 +66,7 @@ export default function Timeline({
 
       <div className="flex items-center gap-1">
         <span className="text-xs text-gray-500 hidden md:inline">Speed:</span>
-        {[0.1, 0.25, 0.5, 1].map(s => (
+        {[1, 2, 5, 10].map(s => (
           <button
             key={s}
             onClick={() => onSpeedChange(s)}

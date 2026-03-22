@@ -157,7 +157,7 @@ export default function FilterPanel({
             <option value="">Select a match...</option>
             {filteredMatches.map(m => (
               <option key={m.match_id} value={m.match_id}>
-                {m.match_id.slice(0, 8)}... | {m.human_count}H {m.bot_count}B | {Math.round(m.duration_seconds)}s
+                {m.match_id.slice(0, 8)}... | {m.human_count}H {m.bot_count}B | {m.total_events} events
               </option>
             ))}
           </select>

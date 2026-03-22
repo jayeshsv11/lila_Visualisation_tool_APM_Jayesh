@@ -11,7 +11,7 @@ import { MAP_MINIMAP_FILES } from './lib/constants';
 import type { MapId, ViewMode, HeatmapMode } from './lib/types';
 
 function App() {
-  const { manifest, matches, events, loading, loadDays } = useDataLoader();
+  const { manifest, matches, events, allEvents, allEventsLoaded, loading, error, loadDays, loadAllDays } = useDataLoader();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [selectedMap, setSelectedMap] = useState<MapId>('AmbroseValley');
@@ -28,10 +28,23 @@ function App() {
     }
   }, [selectedDays, loadDays]);
 
+  // Load all days when entering heatmap mode for full data coverage
+  useEffect(() => {
+    if (viewMode === 'heatmap' && !allEventsLoaded) {
+      loadAllDays();
+    }
+  }, [viewMode, allEventsLoaded, loadAllDays]);
+
   // Filter events by selected map
   const mapEvents = useMemo(
     () => events.filter(e => e.map_id === selectedMap),
     [events, selectedMap]
+  );
+
+  // Heatmap events filtered by map (uses all days data)
+  const heatmapMapEvents = useMemo(
+    () => (allEventsLoaded ? allEvents : events).filter(e => e.map_id === selectedMap),
+    [allEvents, allEventsLoaded, events, selectedMap]
   );
 
   // Filter events by selected match (for path view)
@@ -70,6 +83,23 @@ function App() {
 
   const days = manifest?.days.map(d => d.label) || [];
   const maps = (manifest?.maps || ['AmbroseValley', 'GrandRift', 'Lockdown']) as MapId[];
+
+  if (error) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-[#0f1117]">
+        <div className="bg-[#1a1d27] border border-red-500/50 rounded-lg p-6 max-w-md text-center">
+          <h2 className="text-red-400 text-lg font-semibold mb-2">Failed to Load Data</h2>
+          <p className="text-gray-400 text-sm">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-white text-sm transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col bg-[#0f1117]">
@@ -125,7 +155,7 @@ function App() {
             ) : (
               <HeatmapOverlay
                 minimapUrl={MAP_MINIMAP_FILES[selectedMap]}
-                events={mapEvents}
+                events={heatmapMapEvents}
                 mode={heatmapMode}
               />
             )}

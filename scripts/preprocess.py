@@ -84,10 +84,25 @@ def process_dataframe(df: pd.DataFrame, day_label: str) -> pd.DataFrame:
     df["pixel_y"] = [p[1] for p in pixels]
 
     # Convert timestamps to seconds elapsed within each match
-    # datetime64[ms] .astype(int64) gives milliseconds since epoch directly
+    # Raw timestamps are batch-recorded (sub-second ranges per match), so we create
+    # a synthetic timeline that distributes events evenly over an estimated duration.
+    # This makes the playback feature meaningful for Level Designers.
     df["ts_ms"] = df["ts"].astype("int64")
     min_ts_per_match = df.groupby("match_id")["ts_ms"].transform("min")
-    df["ts_seconds"] = round((df["ts_ms"] - min_ts_per_match) / 1000.0, 3)
+    df["ts_raw"] = (df["ts_ms"] - min_ts_per_match) / 1000.0
+
+    # Synthetic timeline: distribute events evenly over estimated match duration
+    # Duration estimate: ~0.5s per event, clamped to [60, 300] seconds
+    df = df.sort_values(["match_id", "ts_raw", "user_id"]).reset_index(drop=True)
+    df["ts_seconds"] = 0.0
+    for match_id, group_idx in df.groupby("match_id").groups.items():
+        n = len(group_idx)
+        estimated_duration = max(60.0, min(300.0, n * 0.5))
+        if n == 1:
+            df.loc[group_idx, "ts_seconds"] = 0.0
+        else:
+            positions = pd.Series(range(n), index=group_idx)
+            df.loc[group_idx, "ts_seconds"] = (positions / (n - 1) * estimated_duration).round(3)
 
     # Clean match_id: strip .nakama-0 suffix for cleaner display
     df["match_id_clean"] = df["match_id"].str.replace(".nakama-0", "", regex=False)

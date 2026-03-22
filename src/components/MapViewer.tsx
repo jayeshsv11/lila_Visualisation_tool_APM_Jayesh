@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useCallback } from 'react';
 import type { GameEvent, EventType } from '../lib/types';
 import { MAP_SIZE, EVENT_COLORS, PLAYER_COLORS } from '../lib/constants';
 import { groupByPlayer, isMovementEvent } from '../lib/filters';
+import { useCanvasZoom } from '../hooks/useCanvasZoom';
 
 interface Props {
   minimapUrl: string;
@@ -71,6 +72,7 @@ export default function MapViewer({ minimapUrl, events, showBots, currentTime }:
   const [imgLoaded, setImgLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [canvasSize, setCanvasSize] = useState(700);
+  const zoomPan = useCanvasZoom(canvasSize);
 
   // Load minimap image
   useEffect(() => {
@@ -108,6 +110,11 @@ export default function MapViewer({ minimapUrl, events, showBots, currentTime }:
     const scale = canvasSize / MAP_SIZE;
 
     ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+    // Apply zoom/pan transform
+    ctx.save();
+    zoomPan.applyTransform(ctx);
+
     ctx.drawImage(img, 0, 0, canvasSize, canvasSize);
 
     // Filter events by time if playback active
@@ -156,20 +163,36 @@ export default function MapViewer({ minimapUrl, events, showBots, currentTime }:
         drawMarker(ctx, e.pixel_x * scale, e.pixel_y * scale, e.event, scale);
       }
     }
-  }, [events, showBots, currentTime, imgLoaded, canvasSize]);
+
+    ctx.restore();
+  }, [events, showBots, currentTime, imgLoaded, canvasSize, zoomPan.applyTransform]);
 
   useEffect(() => {
     draw();
   }, [draw]);
 
   return (
-    <div ref={containerRef} className="flex-1 flex items-center justify-center bg-[#0a0c10] overflow-hidden">
+    <div ref={containerRef} className="flex-1 flex items-center justify-center bg-[#0a0c10] overflow-hidden relative">
       <canvas
         ref={canvasRef}
         width={canvasSize}
         height={canvasSize}
         className="border border-gray-700 rounded"
+        style={{ cursor: zoomPan.zoom > 1 ? 'grab' : 'default' }}
+        onWheel={zoomPan.handleWheel}
+        onMouseDown={zoomPan.handleMouseDown}
+        onMouseMove={zoomPan.handleMouseMove}
+        onMouseUp={zoomPan.handleMouseUp}
+        onMouseLeave={zoomPan.handleMouseLeave}
       />
+      {zoomPan.zoom > 1 && (
+        <button
+          onClick={zoomPan.resetZoom}
+          className="absolute top-2 left-2 md:top-3 md:left-3 px-2 py-1 bg-[#1a1d27]/90 border border-gray-700 rounded text-xs text-gray-300 hover:text-white transition-colors"
+        >
+          {zoomPan.zoom.toFixed(1)}x — Reset
+        </button>
+      )}
     </div>
   );
 }

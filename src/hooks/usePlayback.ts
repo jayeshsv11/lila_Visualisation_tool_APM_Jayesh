@@ -3,7 +3,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 export function usePlayback(maxTime: number) {
   const [currentTime, setCurrentTime] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(0.1);
+  const [speed, setSpeed] = useState(1);
   const animRef = useRef<number>(0);
   const lastFrameRef = useRef<number>(0);
 
