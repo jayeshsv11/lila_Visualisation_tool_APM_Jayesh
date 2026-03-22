@@ -171,6 +171,9 @@ export default function MapViewer({ minimapUrl, events, showBots, currentTime }:
     draw();
   }, [draw]);
 
+  // Determine if there are visible events to show
+  const hasVisibleEvents = events.length > 0 && (showBots || events.some(e => !e.is_bot));
+
   return (
     <div ref={containerRef} className="flex-1 flex items-center justify-center bg-[#0a0c10] overflow-hidden relative">
       <canvas
@@ -185,6 +188,11 @@ export default function MapViewer({ minimapUrl, events, showBots, currentTime }:
         onMouseUp={zoomPan.handleMouseUp}
         onMouseLeave={zoomPan.handleMouseLeave}
       />
+      {!hasVisibleEvents && imgLoaded && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[#1a1d27]/90 border border-gray-700 rounded text-xs text-gray-400">
+          {events.length === 0 ? 'Select a match to view player journeys' : 'No human events — enable "Show Bots" to see bot paths'}
+        </div>
+      )}
       {zoomPan.zoom > 1 && (
         <button
           onClick={zoomPan.resetZoom}

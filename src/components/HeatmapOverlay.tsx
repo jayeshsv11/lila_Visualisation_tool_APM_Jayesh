@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import type { GameEvent, HeatmapMode } from '../lib/types';
 import { MAP_SIZE } from '../lib/constants';
 import { getKillEvents, getDeathEvents, getTrafficEvents } from '../lib/filters';
@@ -12,9 +12,10 @@ interface Props {
   minimapUrl: string;
   events: GameEvent[];
   mode: HeatmapMode;
+  showBots: boolean;
 }
 
-export default function HeatmapOverlay({ minimapUrl, events, mode }: Props) {
+export default function HeatmapOverlay({ minimapUrl, events, mode, showBots }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heatCanvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -45,6 +46,27 @@ export default function HeatmapOverlay({ minimapUrl, events, mode }: Props) {
     return () => observer.disconnect();
   }, []);
 
+  const heatmapStats = useMemo(() => {
+    const sourceEvents = showBots ? events : events.filter(e => !e.is_bot);
+    let count: number;
+    let label: string;
+    switch (mode) {
+      case 'kills':
+        count = getKillEvents(sourceEvents).length;
+        label = 'kill events';
+        break;
+      case 'deaths':
+        count = getDeathEvents(sourceEvents).length;
+        label = 'death events';
+        break;
+      case 'traffic':
+        count = getTrafficEvents(sourceEvents).length;
+        label = 'position events';
+        break;
+    }
+    return { count, label };
+  }, [events, mode, showBots]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const heatCanvas = heatCanvasRef.current;
@@ -65,18 +87,21 @@ export default function HeatmapOverlay({ minimapUrl, events, mode }: Props) {
     // Draw minimap
     ctx.drawImage(img, 0, 0, canvasSize, canvasSize);
 
+    // Optionally exclude bot events
+    const sourceEvents = showBots ? events : events.filter(e => !e.is_bot);
+
     // Get relevant events
     let filtered: GameEvent[];
     switch (mode) {
       case 'kills':
-        filtered = getKillEvents(events);
+        filtered = getKillEvents(sourceEvents);
         break;
       case 'deaths':
-        filtered = getDeathEvents(events);
+        filtered = getDeathEvents(sourceEvents);
         break;
       case 'traffic':
         // For traffic, sample every 3rd event to avoid overwhelming
-        filtered = getTrafficEvents(events).filter((_, i) => i % 3 === 0);
+        filtered = getTrafficEvents(sourceEvents).filter((_, i) => i % 3 === 0);
         break;
     }
 
@@ -104,7 +129,7 @@ export default function HeatmapOverlay({ minimapUrl, events, mode }: Props) {
     }
 
     ctx.restore();
-  }, [events, mode, imgLoaded, canvasSize, zoomPan.applyTransform]);
+  }, [events, mode, showBots, imgLoaded, canvasSize, zoomPan.applyTransform]);
 
   return (
     <div ref={containerRef} className="flex-1 flex items-center justify-center bg-[#0a0c10] overflow-hidden relative">
@@ -121,6 +146,9 @@ export default function HeatmapOverlay({ minimapUrl, events, mode }: Props) {
         onMouseLeave={zoomPan.handleMouseLeave}
       />
       <canvas ref={heatCanvasRef} className="hidden" />
+      <div className="absolute top-14 right-2 md:top-3 md:right-3 bg-[#1a1d27]/90 backdrop-blur-sm border border-gray-700 rounded-lg px-3 py-2">
+        <span className="text-xs text-gray-300">{heatmapStats.count.toLocaleString()} {heatmapStats.label}</span>
+      </div>
       {zoomPan.zoom > 1 && (
         <button
           onClick={zoomPan.resetZoom}

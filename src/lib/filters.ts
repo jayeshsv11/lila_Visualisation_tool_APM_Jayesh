@@ -1,19 +1,7 @@
 import type { GameEvent, EventType } from './types';
 
-export function filterByMatch(events: GameEvent[], matchId: string): GameEvent[] {
-  return events.filter(e => e.match_id === matchId);
-}
-
-export function filterByTime(events: GameEvent[], maxSeconds: number): GameEvent[] {
-  return events.filter(e => e.ts_seconds <= maxSeconds);
-}
-
 export function isMovementEvent(event: EventType): boolean {
   return event === 'Position' || event === 'BotPosition';
-}
-
-export function isCombatEvent(event: EventType): boolean {
-  return event === 'Kill' || event === 'Killed' || event === 'BotKill' || event === 'BotKilled';
 }
 
 export function groupByPlayer(events: GameEvent[]): Map<string, GameEvent[]> {

@@ -71,6 +71,11 @@ function App() {
 
   const playback = usePlayback(matchDuration);
 
+  // Reset playback when switching matches
+  useEffect(() => {
+    playback.reset();
+  }, [selectedMatch]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleDayToggle = (day: string) => {
     setSelectedDays(prev => {
       if (prev.includes(day)) {
@@ -96,6 +101,17 @@ function App() {
           >
             Retry
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!manifest) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-[#0f1117]">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+          <p className="text-gray-400 text-sm">Loading LILA BLACK data...</p>
         </div>
       </div>
     );
@@ -157,9 +173,10 @@ function App() {
                 minimapUrl={MAP_MINIMAP_FILES[selectedMap]}
                 events={heatmapMapEvents}
                 mode={heatmapMode}
+                showBots={showBots}
               />
             )}
-            <EventLegend />
+            {viewMode === 'paths' && <EventLegend />}
             {viewMode === 'paths' && selectedMatch && matchEvents.length > 0 && (
               <MatchInfo matchId={selectedMatch} events={matchEvents} />
             )}
