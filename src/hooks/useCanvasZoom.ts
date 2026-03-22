@@ -74,6 +74,35 @@ export function useCanvasZoom(canvasSize: number) {
     e.currentTarget.style.cursor = 'default';
   }, []);
 
+  const zoomIn = useCallback(() => {
+    setState(prev => {
+      const newZoom = Math.min(8, prev.zoom * 1.3);
+      const center = canvasSize / 2;
+      const scale = newZoom / prev.zoom;
+      let newPanX = center - scale * (center - prev.panX);
+      let newPanY = center - scale * (center - prev.panY);
+      const maxPan = canvasSize * (newZoom - 1);
+      newPanX = Math.max(-maxPan, Math.min(0, newPanX));
+      newPanY = Math.max(-maxPan, Math.min(0, newPanY));
+      return { zoom: newZoom, panX: newPanX, panY: newPanY };
+    });
+  }, [canvasSize]);
+
+  const zoomOut = useCallback(() => {
+    setState(prev => {
+      const newZoom = Math.max(1, prev.zoom / 1.3);
+      if (newZoom <= 1.01) return { zoom: 1, panX: 0, panY: 0 };
+      const center = canvasSize / 2;
+      const scale = newZoom / prev.zoom;
+      let newPanX = center - scale * (center - prev.panX);
+      let newPanY = center - scale * (center - prev.panY);
+      const maxPan = canvasSize * (newZoom - 1);
+      newPanX = Math.max(-maxPan, Math.min(0, newPanX));
+      newPanY = Math.max(-maxPan, Math.min(0, newPanY));
+      return { zoom: newZoom, panX: newPanX, panY: newPanY };
+    });
+  }, [canvasSize]);
+
   const resetZoom = useCallback(() => {
     setState({ zoom: 1, panX: 0, panY: 0 });
   }, []);
@@ -92,6 +121,8 @@ export function useCanvasZoom(canvasSize: number) {
     handleMouseMove,
     handleMouseUp,
     handleMouseLeave,
+    zoomIn,
+    zoomOut,
     resetZoom,
     applyTransform,
   };

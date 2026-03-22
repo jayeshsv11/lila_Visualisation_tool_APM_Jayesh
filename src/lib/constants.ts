@@ -44,3 +44,9 @@ export const DAY_LABELS: Record<string, string> = {
 };
 
 export const MAP_SIZE = 1024;
+
+export const MAP_CONFIGS: Record<MapId, { scale: number; origin_x: number; origin_z: number }> = {
+  AmbroseValley: { scale: 900, origin_x: -370, origin_z: -473 },
+  GrandRift: { scale: 581, origin_x: -290, origin_z: -290 },
+  Lockdown: { scale: 1000, origin_x: -500, origin_z: -500 },
+};

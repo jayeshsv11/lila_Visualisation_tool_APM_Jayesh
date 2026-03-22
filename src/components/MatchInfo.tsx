@@ -1,11 +1,21 @@
+import { useState } from 'react';
 import type { GameEvent } from '../lib/types';
 
 interface Props {
   matchId: string;
   events: GameEvent[];
+  matchNumber?: number;
+  matchTotal?: number;
 }
 
-export default function MatchInfo({ matchId, events }: Props) {
+export default function MatchInfo({ matchId, events, matchNumber, matchTotal }: Props) {
+  const [copied, setCopied] = useState(false);
+
+  const copyMatchId = () => {
+    navigator.clipboard.writeText(matchId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
   const humans = new Set(events.filter(e => !e.is_bot).map(e => e.user_id)).size;
   const bots = new Set(events.filter(e => e.is_bot).map(e => e.user_id)).size;
   const kills = events.filter(e => e.event === 'Kill').length;
@@ -17,8 +27,26 @@ export default function MatchInfo({ matchId, events }: Props) {
 
   return (
     <div className="absolute top-14 left-2 md:top-3 md:left-3 bg-[#1a1d27]/90 backdrop-blur-sm border border-gray-700 rounded-lg p-2 md:p-3 max-w-[200px] md:max-w-xs">
-      <h3 className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Match Info</h3>
-      <div className="text-xs text-gray-300 font-mono mb-2">{matchId.slice(0, 16)}...</div>
+      <div className="flex items-center justify-between mb-1">
+        <h3 className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Match Info</h3>
+        {matchNumber != null && matchTotal != null && (
+          <span className="text-[10px] text-gray-500">#{matchNumber} of {matchTotal}</span>
+        )}
+      </div>
+      <div className="flex items-center gap-1.5 mb-2">
+        <span className="text-[10px] text-gray-400 font-mono select-all break-all leading-tight">{matchId}</span>
+        <button
+          onClick={copyMatchId}
+          className="shrink-0 text-gray-500 hover:text-white transition-colors"
+          title="Copy match ID"
+        >
+          {copied ? (
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-green-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>
+          )}
+        </button>
+      </div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
         <span className="text-gray-400">Humans:</span>
         <span className="text-white font-semibold">{humans}</span>

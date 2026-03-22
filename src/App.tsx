@@ -8,7 +8,7 @@ import Timeline from './components/Timeline';
 import EventLegend from './components/EventLegend';
 import MatchInfo from './components/MatchInfo';
 import { MAP_MINIMAP_FILES } from './lib/constants';
-import type { MapId, ViewMode, HeatmapMode } from './lib/types';
+import type { MapId, ViewMode, HeatmapMode, EventType } from './lib/types';
 
 function App() {
   const { manifest, matches, events, allEvents, allEventsLoaded, loading, error, loadDays, loadAllDays } = useDataLoader();
@@ -20,6 +20,9 @@ function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('paths');
   const [heatmapMode, setHeatmapMode] = useState<HeatmapMode>('kills');
   const [showBots, setShowBots] = useState(false);
+  const [visibleEventTypes, setVisibleEventTypes] = useState<Set<EventType>>(
+    new Set(['Position', 'BotPosition', 'Kill', 'Killed', 'BotKill', 'BotKilled', 'KilledByStorm', 'Loot'])
+  );
 
   // Load data when selected days change
   useEffect(() => {
@@ -76,6 +79,18 @@ function App() {
     if (matchEvents.length === 0) return 60;
     return Math.max(...matchEvents.map(e => e.ts_seconds));
   }, [matchEvents]);
+
+  // Compute match position for MatchInfo display
+  const filteredMatchList = useMemo(() =>
+    matches
+      .filter(m => m.map_id === selectedMap && selectedDays.includes(m.day))
+      .sort((a, b) => (b.human_count + b.bot_count) - (a.human_count + a.bot_count)),
+    [matches, selectedMap, selectedDays]
+  );
+  const matchNumber = selectedMatch
+    ? filteredMatchList.findIndex(m => m.match_id === selectedMatch) + 1
+    : undefined;
+  const matchTotal = filteredMatchList.length;
 
   const playback = usePlayback(matchDuration);
 
@@ -161,6 +176,8 @@ function App() {
           onHeatmapModeChange={setHeatmapMode}
           showBots={showBots}
           onShowBotsChange={setShowBots}
+          visibleEventTypes={visibleEventTypes}
+          onVisibleEventTypesChange={setVisibleEventTypes}
           totalEvents={events.length}
           loading={loading}
           isOpen={sidebarOpen}
@@ -175,6 +192,8 @@ function App() {
                 events={matchEvents}
                 showBots={showBots}
                 currentTime={playback.currentTime}
+                selectedMap={selectedMap}
+                visibleEventTypes={visibleEventTypes}
               />
             ) : (
               <HeatmapOverlay
@@ -182,11 +201,12 @@ function App() {
                 events={heatmapMapEvents}
                 mode={heatmapMode}
                 showBots={showBots}
+                selectedMap={selectedMap}
               />
             )}
             {viewMode === 'paths' && <EventLegend />}
             {viewMode === 'paths' && selectedMatch && matchEvents.length > 0 && (
-              <MatchInfo matchId={selectedMatch} events={matchEvents} />
+              <MatchInfo matchId={selectedMatch} events={matchEvents} matchNumber={matchNumber} matchTotal={matchTotal} />
             )}
           </div>
 
