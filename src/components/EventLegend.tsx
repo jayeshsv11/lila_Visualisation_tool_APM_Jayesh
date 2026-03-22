@@ -16,7 +16,7 @@ const SHAPES: Record<string, string> = {
 
 export default function EventLegend() {
   return (
-    <div className="absolute top-3 right-3 bg-[#1a1d27]/90 backdrop-blur-sm border border-gray-700 rounded-lg p-3">
+    <div className="absolute top-14 right-2 md:top-3 md:right-3 bg-[#1a1d27]/90 backdrop-blur-sm border border-gray-700 rounded-lg p-2 md:p-3">
       <h3 className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Legend</h3>
       <div className="space-y-1">
         {LEGEND_EVENTS.map(event => (

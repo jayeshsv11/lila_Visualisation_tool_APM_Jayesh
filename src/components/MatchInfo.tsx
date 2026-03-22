@@ -16,7 +16,7 @@ export default function MatchInfo({ matchId, events }: Props) {
   const duration = Math.max(...events.map(e => e.ts_seconds));
 
   return (
-    <div className="absolute top-3 left-3 bg-[#1a1d27]/90 backdrop-blur-sm border border-gray-700 rounded-lg p-3 max-w-xs">
+    <div className="absolute top-14 left-2 md:top-3 md:left-3 bg-[#1a1d27]/90 backdrop-blur-sm border border-gray-700 rounded-lg p-2 md:p-3 max-w-[200px] md:max-w-xs">
       <h3 className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Match Info</h3>
       <div className="text-xs text-gray-300 font-mono mb-2">{matchId.slice(0, 16)}...</div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">

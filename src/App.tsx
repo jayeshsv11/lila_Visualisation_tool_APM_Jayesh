@@ -12,6 +12,7 @@ import type { MapId, ViewMode, HeatmapMode } from './lib/types';
 
 function App() {
   const { manifest, matches, events, loading, loadDays } = useDataLoader();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [selectedMap, setSelectedMap] = useState<MapId>('AmbroseValley');
   const [selectedDays, setSelectedDays] = useState<string[]>(['feb10']);
@@ -73,6 +74,23 @@ function App() {
   return (
     <div className="h-screen flex flex-col bg-[#0f1117]">
       <div className="flex flex-1 overflow-hidden">
+        {/* Mobile hamburger button */}
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="md:hidden fixed top-3 left-3 z-50 w-10 h-10 flex items-center justify-center bg-[#1a1d27] border border-gray-700 rounded-lg text-gray-300 hover:text-white transition-colors"
+          aria-label="Open menu"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg>
+        </button>
+
+        {/* Mobile backdrop */}
+        {sidebarOpen && (
+          <div
+            className="md:hidden fixed inset-0 z-30 bg-black/50"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
         <FilterPanel
           maps={maps}
           selectedMap={selectedMap}
@@ -91,6 +109,8 @@ function App() {
           onShowBotsChange={setShowBots}
           totalEvents={events.length}
           loading={loading}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
         />
 
         <div className="flex-1 flex flex-col relative">
