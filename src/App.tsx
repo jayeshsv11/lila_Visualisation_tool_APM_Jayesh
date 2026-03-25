@@ -12,7 +12,10 @@ import type { MapId, ViewMode, HeatmapMode, EventType } from './lib/types';
 
 function App() {
   const { manifest, matches, events, allEvents, allEventsLoaded, loading, error, loadDays, loadAllDays } = useDataLoader();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    const stored = localStorage.getItem('lila-sidebar-open');
+    return stored !== null ? stored === 'true' : true;
+  });
 
   const [selectedMap, setSelectedMap] = useState<MapId>('AmbroseValley');
   const [selectedDays, setSelectedDays] = useState<string[]>(['feb10']);
@@ -23,6 +26,21 @@ function App() {
   const [visibleEventTypes, setVisibleEventTypes] = useState<Set<EventType>>(
     new Set(['Position', 'BotPosition', 'Kill', 'Killed', 'BotKill', 'BotKilled', 'KilledByStorm', 'Loot'])
   );
+
+  // Persist sidebar state
+  useEffect(() => {
+    localStorage.setItem('lila-sidebar-open', String(sidebarOpen));
+  }, [sidebarOpen]);
+
+  // Keyboard shortcut: [ to toggle sidebar
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === '[') setSidebarOpen(prev => !prev);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   // Load data when selected days change
   useEffect(() => {
@@ -143,14 +161,17 @@ function App() {
   return (
     <div className="h-screen flex flex-col bg-[#0f1117]">
       <div className="flex flex-1 overflow-hidden">
-        {/* Mobile hamburger button */}
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="md:hidden fixed top-3 left-3 z-50 w-10 h-10 flex items-center justify-center bg-[#1a1d27] border border-gray-700 rounded-lg text-gray-300 hover:text-white transition-colors"
-          aria-label="Open menu"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg>
-        </button>
+        {/* Sidebar open button — visible on all screen sizes when collapsed */}
+        {!sidebarOpen && (
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="fixed top-3 left-3 z-50 w-10 h-10 flex items-center justify-center bg-[#1a1d27] border border-gray-700 rounded-lg text-gray-300 hover:text-white transition-colors"
+            aria-label="Open sidebar"
+            title="Open sidebar ( [ )"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg>
+          </button>
+        )}
 
         {/* Mobile backdrop */}
         {sidebarOpen && (

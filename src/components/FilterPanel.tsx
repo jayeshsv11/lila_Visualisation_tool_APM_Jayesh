@@ -54,15 +54,15 @@ export default function FilterPanel({
     .filter(m => selectedDays.includes(m.day));
 
   return (
-    <div className={`fixed inset-y-0 left-0 z-40 w-72 bg-[#1a1d27] border-r border-gray-700 flex flex-col overflow-y-auto transform transition-transform duration-300 md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+    <div className={`fixed inset-y-0 left-0 z-40 w-72 bg-[#1a1d27] border-r border-gray-700 flex flex-col overflow-y-auto transform transition-transform duration-300 ${isOpen ? 'md:relative translate-x-0' : '-translate-x-full'}`}>
       {/* Header */}
       <div className="p-4 border-b border-gray-700 flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold text-white">LILA BLACK</h1>
           <p className="text-xs text-gray-500 mt-1">Player Journey Visualization</p>
         </div>
-        <button onClick={onClose} className="md:hidden w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white rounded transition-colors" aria-label="Close sidebar">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+        <button onClick={onClose} className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white rounded transition-colors" aria-label="Collapse sidebar" title="Collapse sidebar ( [ )">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
         </button>
       </div>
 
