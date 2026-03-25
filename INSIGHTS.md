@@ -1,60 +1,59 @@
 # Game Insights
 
-## Insight 1: PvP Combat is Nearly Non-Existent — The Bot Economy Dominates
+## Insight 1: Players almost never fight each other
 
-**What caught my eye:** Across all 89,104 events and 796 matches over 5 days, there were only **3 PvP kills** (human vs human) across all three maps. Meanwhile, there were **2,415 bot kills**. The PvP kill rate is 0.12% of all kills.
+This one surprised me the most. Out of 796 matches, I found only 3 human-vs-human kills. Three. Meanwhile there were 2,415 bot kills. That's 0.12% PvP.
 
-**The numbers:**
-| Map | PvP Kills | Bot Kills | PvP Kill Rate |
-|-----|-----------|-----------|---------------|
-| AmbroseValley | 2 | 1,797 | 0.1% |
-| GrandRift | 1 | 192 | 0.5% |
-| Lockdown | 0 | 426 | 0.0% |
+| Map | PvP Kills | Bot Kills |
+|-----|-----------|-----------|
+| AmbroseValley | 2 | 1,797 |
+| GrandRift | 1 | 192 |
+| Lockdown | 0 | 426 |
 
-The heatmap tool confirmed this — Kill Zone heatmaps are almost entirely driven by bot encounters, spread across predictable patrol paths. There are no human PvP "hotspots" because PvP essentially doesn't happen.
+When I switched to the kill zone heatmap, it made sense visually too. Every hotspot was along bot patrol routes. There's nothing that looks like a PvP fight cluster anywhere on any map.
 
-**Why a Level Designer should care:** This signals a fundamental matchmaking or map flow problem. Either:
-- Human players are not encountering each other (map is too large relative to player count, or spawn points are too spread)
-- Players are actively avoiding PvP (extracting before engaging)
-- The bot density is so high that players fill their engagement quota on bots before finding humans
+My best guess is that the maps are large enough and player counts low enough that humans rarely bump into each other. By the time they could, they've already filled their bags from bots and extracted. If the level design team wants PvP to actually happen, they'd need to either tighten spawn areas, create natural chokepoints, or thin out bots near extraction zones so players have a reason to contest each other.
+
+**Why a level designer should care:** This means the combat loop is entirely PvE right now. For a game that's supposed to have extraction-shooter tension, that tension doesn't exist. The map layout is letting players avoid each other completely.
 
 **Actionable items:**
-- **Metric to track:** PvP encounter rate (how often two human players are within engagement range)
-- **Action:** Tighten player spawn zones or create map chokepoints that force human-human encounters
-- **Action:** Reduce bot density in areas near extraction points to force players into contested human zones
-- **Expected impact:** Increased PvP kills per match, higher player engagement and retention
+- Track PvP encounter rate (how often two humans are within engagement range) — if it's near zero, the map geometry is the problem
+- Tighten player spawn zones or add chokepoints that funnel humans toward each other
+- Reduce bot density near extraction points so players can't fill up and leave without ever seeing another human
+- **Metrics affected:** PvP kills per match, average engagement distance between humans, player retention
 
 ---
 
-## Insight 2: Severe Player Drop-off — 60% Decline in 5 Days
+## Insight 2: The game lost 60% of its matches in 4 days
 
-**What caught my eye:** Daily match counts show a steep, consistent decline:
+I noticed this when switching between days in the filter panel.
 
 | Day | Matches | Change |
 |-----|---------|--------|
-| Feb 10 | 285 | — |
+| Feb 10 | 285 | - |
 | Feb 11 | 200 | -30% |
 | Feb 12 | 162 | -19% |
 | Feb 13 | 112 | -31% |
-| Feb 14 | 37 | -67% (partial day) |
 
-Even excluding Feb 14 (partial), matches dropped 61% from Feb 10 to Feb 13. Unique human players also declined proportionally.
+That's a 61% drop in 4 days (excluding Feb 14 which was a partial day with only 37 matches). The traffic heatmaps tell the same story. Feb 13 maps look noticeably empty compared to Feb 10, with whole regions going dark.
 
-The traffic heatmap across different days confirmed this — Feb 13 heatmaps are noticeably sparser than Feb 10, with entire map regions showing zero activity.
+What also stood out is that 68.5% of all events happen on AmbroseValley. GrandRift is only 7.7%. Players are barely trying the other maps. That combination of not exploring + dropping off fast suggests the core loop isn't giving people a reason to come back. If every match feels the same (same loot spots, same bot paths, no real PvP), one or two sessions is enough.
 
-**Why a Level Designer should care:** This isn't just a playerbase issue — the maps may be contributing to churn. If players explore the map once, find it repetitive (same loot locations, same bot encounters, no PvP), there's no reason to return. The data shows players overwhelmingly play AmbroseValley (68.5% of all events) and rarely try GrandRift (7.7%), suggesting the other maps aren't compelling enough to retain curiosity.
+Worth investigating why GrandRift gets so little traffic. Is it locked behind progression? Hard to find in the UI? Or do players try it once and not return?
+
+**Why a level designer should care:** If players explore a map once, find it repetitive (same loot spots, same bot paths, no PvP), there's no reason to come back. The maps may be contributing directly to churn, not just the meta or matchmaking.
 
 **Actionable items:**
-- **Metric to track:** Day-2 and Day-3 retention rate, matches per unique player per day
-- **Action:** Add daily-rotating loot hotspots or dynamic map events to create reason for return visits
-- **Action:** Investigate why GrandRift has such low play rate — is it unlocked later, less visible in UI, or just unpopular?
-- **Expected impact:** Improved D2-D7 retention, more even map distribution
+- Track day-2 and day-3 retention rate, and matches per unique player per day
+- Add daily-rotating loot hotspots or dynamic map events to create a reason for return visits
+- Investigate GrandRift's low play rate specifically — is it a UI discoverability issue or a map quality issue?
+- **Metrics affected:** D2–D7 retention, map distribution evenness, matches per player per day
 
 ---
 
-## Insight 3: Lockdown Has Disproportionate Storm Deaths Despite Being the Smallest Map
+## Insight 3: Lockdown's storm kills way more players than it should
 
-**What caught my eye:** Lockdown and AmbroseValley have the **same number of storm deaths** (17 each), despite AmbroseValley having 3x more total events. Normalizing for player activity:
+Lockdown and AmbroseValley both have exactly 17 storm deaths, but AmbroseValley has 3x more total events.
 
 | Map | Storm Deaths | Total Events | Storm Death Rate |
 |-----|-------------|--------------|-----------------|
@@ -62,12 +61,14 @@ The traffic heatmap across different days confirmed this — Feb 13 heatmaps are
 | GrandRift | 5 | 6,853 | 0.073% |
 | Lockdown | 17 | 21,238 | 0.080% |
 
-Lockdown's storm death rate is **2.9x higher** than AmbroseValley's. The death zone heatmap for Lockdown shows storm deaths concentrated at the **map edges** (average pixel position 562, 467 — offset from center), suggesting players get trapped against the boundary.
+Lockdown's rate is 2.9x higher than AmbroseValley. When I checked the death zone heatmap, the storm kills on Lockdown cluster near the map edges (average position around pixel 562, 467), which tells me players are getting caught against the boundary.
 
-**Why a Level Designer should care:** Lockdown is described as a smaller, close-quarters map. The high storm death rate suggests the storm pushes too aggressively relative to the map size, or that extraction points are poorly positioned relative to the storm's direction. Players on the wrong side of the map when the storm starts cannot reach safety in time.
+Lockdown is the smallest map, so the storm probably closes in too fast for players on the wrong side to reach extraction. Either the storm speed needs to be slower on this map, or there should be extraction points spread more evenly so nobody is stuck running across the whole map with no chance of making it.
+
+**Why a level designer should care:** Storm deaths feel unfair — the player didn't lose a fight, they just got unlucky with positioning. On a small map, that's a design problem, not a player skill problem. These deaths drive frustration and churn.
 
 **Actionable items:**
-- **Metric to track:** Storm death rate per map, average time-to-extract vs storm arrival time
-- **Action:** Slow the storm speed on Lockdown, or add additional extraction points on the far side of the map
-- **Action:** Add visual/audio storm warnings earlier on Lockdown to give players more reaction time
-- **Expected impact:** Reduced frustrating deaths, improved player satisfaction on Lockdown
+- Track storm death rate per map and average time-to-extract vs storm arrival time
+- Slow storm speed on Lockdown, or add extraction points on the far side of the map
+- Add earlier visual/audio storm warnings on Lockdown to give players more reaction time
+- **Metrics affected:** Storm death rate, player satisfaction on Lockdown, per-map churn rate

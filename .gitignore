@@ -18,6 +18,9 @@ player_data/minimaps/
 # Verification artifacts
 scripts/coord_verification.png
 
+# Personal notes
+DEMO_NOTES.md
+
 # IDE
 .vscode/
 .idea/
