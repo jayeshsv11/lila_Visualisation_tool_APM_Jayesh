@@ -6,13 +6,13 @@ A web-based tool for Level Designers to explore player behavior across 3 maps in
 
 ## Features
 
-- **Player Journey Paths** — Visualize individual player movement paths on minimaps with correct coordinate mapping
-- **Human vs Bot Distinction** — Humans shown in color, bots in gray (toggleable)
-- **Event Markers** — Kill, death, loot, and storm death events rendered as distinct colored shapes
-- **Filter by Map / Date / Match** — Drill down to specific matches or aggregate across days
-- **Timeline Playback** — Watch a match unfold event-by-event with play/pause and speed controls
-- **Heatmap Overlays** — Kill zones, death zones, and traffic density aggregated across all matches
-- **3 Maps Supported** — AmbroseValley, GrandRift, Lockdown with accurate coordinate mapping
+- **Player Journey Paths:** Visualize individual player movement paths on minimaps with correct coordinate mapping
+- **Human vs Bot Distinction:** Humans shown in color, bots in gray (toggleable)
+- **Event Markers:** Kill, death, loot, and storm death events rendered as distinct colored shapes
+- **Filter by Map / Date / Match:** Drill down to specific matches or aggregate across days
+- **Timeline Playback:** Watch a match unfold event-by-event with play/pause and speed controls
+- **Heatmap Overlays:** Kill zones, death zones, and traffic density aggregated across all matches
+- **3 Maps Supported:** AmbroseValley, GrandRift, Lockdown with accurate coordinate mapping
 
 ## Tech Stack
 
