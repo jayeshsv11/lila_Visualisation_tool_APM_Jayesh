@@ -16,6 +16,7 @@ function App() {
     const stored = localStorage.getItem('lila-sidebar-open');
     return stored !== null ? stored === 'true' : true;
   });
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const [selectedMap, setSelectedMap] = useState<MapId>('AmbroseValley');
   const [selectedDays, setSelectedDays] = useState<string[]>(['feb10']);
@@ -27,6 +28,21 @@ function App() {
     new Set(['Position', 'BotPosition', 'Kill', 'Killed', 'BotKill', 'BotKilled', 'KilledByStorm', 'Loot'])
   );
 
+  // Track fullscreen state
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', handler);
+    return () => document.removeEventListener('fullscreenchange', handler);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      document.documentElement.requestFullscreen();
+    }
+  };
+
   // Persist sidebar state
   useEffect(() => {
     localStorage.setItem('lila-sidebar-open', String(sidebarOpen));
@@ -37,6 +53,7 @@ function App() {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.key === '[') setSidebarOpen(prev => !prev);
+      if (e.key === 'f') toggleFullscreen();
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
@@ -229,6 +246,18 @@ function App() {
             {viewMode === 'paths' && selectedMatch && matchEvents.length > 0 && (
               <MatchInfo matchId={selectedMatch} events={matchEvents} matchNumber={matchNumber} matchTotal={matchTotal} />
             )}
+            <button
+              onClick={toggleFullscreen}
+              className="absolute bottom-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-[#1a1d27]/90 backdrop-blur-sm border border-gray-700 rounded-lg text-gray-400 hover:text-white transition-colors"
+              aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+              title={isFullscreen ? 'Exit fullscreen ( F )' : 'Fullscreen ( F )'}
+            >
+              {isFullscreen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H5v3a1 1 0 01-2 0V4zm12-1a1 1 0 011 1v3a1 1 0 01-2 0V5h-3a1 1 0 010-2h4zM4 16a1 1 0 001 1h4a1 1 0 000-2H6v-3a1 1 0 00-2 0v4zm12 1a1 1 0 01-1-1v-3a1 1 0 012 0v3h3a1 1 0 010 2h-4z" clipRule="evenodd" /></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9-1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zM5 13.586l-2.293 2.293A1 1 0 004 17h4a1 1 0 000-2H6.414l2.293-2.293a1 1 0 00-1.414-1.414L5 13.586zm10 0l2.293 2.293A1 1 0 0116 17h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 011.414-1.414L15 13.586z" clipRule="evenodd" /></svg>
+              )}
+            </button>
           </div>
 
           {viewMode === 'paths' && selectedMatch && (
