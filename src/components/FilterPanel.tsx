@@ -129,23 +129,25 @@ export default function FilterPanel({
         </div>
       </div>
 
-      {/* Day Filter */}
-      <div className="p-4 border-b border-gray-700">
-        <label className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Date</label>
-        <div className="flex flex-wrap gap-1 mt-2">
-          {days.map(day => (
-            <button
-              key={day}
-              onClick={() => onDayToggle(day)}
-              className={`px-2 py-1 text-xs rounded transition-colors ${
-                selectedDays.includes(day) ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
-              }`}
-            >
-              {DAY_LABELS[day] || day}
-            </button>
-          ))}
+      {/* Day Filter (paths mode only — heatmap aggregates all days) */}
+      {viewMode === 'paths' && (
+        <div className="p-4 border-b border-gray-700">
+          <label className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Date</label>
+          <div className="flex flex-wrap gap-1 mt-2">
+            {days.map(day => (
+              <button
+                key={day}
+                onClick={() => onDayToggle(day)}
+                className={`px-2 py-1 text-xs rounded transition-colors ${
+                  selectedDays.includes(day) ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                }`}
+              >
+                {DAY_LABELS[day] || day}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Match Selector */}
       {viewMode === 'paths' && (
