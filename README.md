@@ -1,4 +1,4 @@
-# LILA BLACK — Player Journey Visualization Tool
+# LILA BLACK: Player Journey Visualization Tool
 
 A web-based tool for Level Designers to explore player behavior across 3 maps in LILA BLACK, an extraction shooter.
 
