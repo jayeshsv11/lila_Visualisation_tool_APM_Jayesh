@@ -216,7 +216,6 @@ function App() {
           onShowBotsChange={setShowBots}
           visibleEventTypes={visibleEventTypes}
           onVisibleEventTypesChange={setVisibleEventTypes}
-          totalEvents={events.length}
           loading={loading}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}

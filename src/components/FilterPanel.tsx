@@ -20,7 +20,6 @@ interface Props {
   onShowBotsChange: (show: boolean) => void;
   visibleEventTypes: Set<EventType>;
   onVisibleEventTypesChange: (types: Set<EventType>) => void;
-  totalEvents: number;
   loading: boolean;
   isOpen: boolean;
   onClose: () => void;
@@ -44,7 +43,6 @@ export default function FilterPanel({
   onShowBotsChange,
   visibleEventTypes,
   onVisibleEventTypesChange,
-  totalEvents,
   loading,
   isOpen,
   onClose,
@@ -220,13 +218,12 @@ export default function FilterPanel({
         </div>
       )}
 
-      {/* Stats */}
-      <div className="p-4 mt-auto">
-        <div className="text-xs text-gray-500 space-y-1">
-          <div>Events loaded: {totalEvents.toLocaleString()}</div>
-          {loading && <div className="text-blue-400">Loading data...</div>}
+      {/* Loading indicator */}
+      {loading && (
+        <div className="p-4 mt-auto">
+          <div className="text-xs text-blue-400">Loading data...</div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
